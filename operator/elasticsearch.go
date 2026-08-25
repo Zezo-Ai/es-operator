@@ -127,7 +127,7 @@ func (o *ElasticsearchOperator) setupInformers(ctx context.Context) error {
 	for _, informer := range informers {
 		// wait for the local cache to be populated.
 		err := wait.PollUntilContextTimeout(ctx, time.Second, 60*time.Second, true, func(_ context.Context) (bool, error) {
-			return informer.HasSynced() == true, nil
+			return informer.HasSynced(), nil
 		})
 		if err != nil {
 			return fmt.Errorf("failed to sync cache for informer: %v", err)
@@ -180,13 +180,13 @@ func (o *ElasticsearchOperator) runWatch(ctx context.Context) error {
 	})
 
 	if err != nil {
-		return fmt.Errorf("Failed to add event handler: %w", err)
+		return fmt.Errorf("failed to add event handler: %w", err)
 	}
 
 	go informer.Run(ctx.Done())
 
 	if !cache.WaitForCacheSync(ctx.Done(), informer.HasSynced) {
-		return fmt.Errorf("Timed out waiting for caches to sync")
+		return fmt.Errorf("timed out waiting for caches to sync")
 	}
 
 	log.Info("Synced ElasticsearchDataSet watcher")
@@ -1033,13 +1033,13 @@ func getOwnerUID(objectMeta metav1.ObjectMeta) (types.UID, bool) {
 
 // templateInjectLabels injects labels into a pod template spec.
 func templateInjectLabels(template v1.PodTemplateSpec, labels map[string]string) v1.PodTemplateSpec {
-	if template.ObjectMeta.Labels == nil {
-		template.ObjectMeta.Labels = map[string]string{}
+	if template.Labels == nil {
+		template.Labels = map[string]string{}
 	}
 
 	for key, value := range labels {
-		if _, ok := template.ObjectMeta.Labels[key]; !ok {
-			template.ObjectMeta.Labels[key] = value
+		if _, ok := template.Labels[key]; !ok {
+			template.Labels[key] = value
 		}
 	}
 	return template

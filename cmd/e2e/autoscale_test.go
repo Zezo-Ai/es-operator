@@ -15,7 +15,7 @@ func TestEDSCPUAutoscaleUP8(t *testing.T) {
 }
 
 func runTestEDSCPUAutoScaleUP(t *testing.T, version, configMap string) {
-	edsName := "cpu-autoscale-up-" + strings.Replace(version, ".", "", -1)
+	edsName := "cpu-autoscale-up-" + strings.ReplaceAll(version, ".", "")
 	edsSpecFactory := NewTestEDSSpecFactory(edsName, version, configMap)
 	edsSpecFactory.Scaling(&zv1.ElasticsearchDataSetScaling{
 		Enabled:                            true,
@@ -65,7 +65,7 @@ func TestEDSAutoscaleUPOnShardCount9(t *testing.T) {
 }
 
 func runTestEDSAutoscaleUPOnShardCount(t *testing.T, version, configMap string) {
-	edsName := "shard-autoscale-up-" + strings.Replace(version, ".", "", -1)
+	edsName := "shard-autoscale-up-" + strings.ReplaceAll(version, ".", "")
 	edsSpecFactory := NewTestEDSSpecFactory(edsName, version, configMap)
 	edsSpecFactory.Scaling(&zv1.ElasticsearchDataSetScaling{
 		Enabled:                            true,
